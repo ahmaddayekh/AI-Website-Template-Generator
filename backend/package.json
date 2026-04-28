@@ -1,0 +1,29 @@
+{
+  "name": "ai-template-generator-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "seed": "node src/seed.js",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@google/genai": "^1.50.1",
+    "@prisma/client": "^6.19.0",
+    "bcryptjs": "^3.0.3",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "jsonwebtoken": "^9.0.3",
+    "openai": "^6.34.0",
+    "stripe": "^22.1.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "nodemon": "latest",
+    "prisma": "^6.19.0"
+  }
+}
