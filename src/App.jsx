@@ -491,7 +491,7 @@ function Generator() {
     colors: "",
   });
 
-  
+
 
   const [usage, setUsage] = useState({
     usedGenerations: 0,
@@ -803,7 +803,7 @@ function Generator() {
                       </div>
 
                       {isOpen && (
-                        <div className="mt-4 rounded-2xl border border-slate-800 bg-slate-950 p-4 text-white">
+                        <div className="mt-4 min-w-0 max-w-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 p-3 text-white sm:p-4">
                           <div className="mb-4 flex flex-wrap gap-2">
                             <button
                               type="button"
@@ -839,8 +839,8 @@ function Generator() {
                             </button>
                           </div>
 
-                          <pre className="max-h-[420px] overflow-auto rounded-xl bg-black p-4 text-sm leading-6 text-slate-100">
-                            <code>
+                          <pre className="max-h-[420px] w-full max-w-full overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-words rounded-xl bg-black p-4 text-xs leading-6 text-slate-100 sm:text-sm">
+                            <code className="block whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
                               {activeCodeTab === "react"
                                 ? section.code?.react || "No React code generated for this section yet."
                                 : activeCodeTab === "html"
@@ -1182,7 +1182,7 @@ function AdminDashboard() {
     loadAdminData();
   }, []);
 
- 
+
   function resetForm() {
     setForm({
       title: "",
@@ -1560,7 +1560,7 @@ function AdminDashboard() {
                 {generations.slice(0, 8).map((generation) => (
                   <div
                     key={generation.id}
-                    className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+                    className="min-w-0 max-w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-4"
                   >
                     <strong>
                       {generation.result?.websiteName || generation.brandName}
