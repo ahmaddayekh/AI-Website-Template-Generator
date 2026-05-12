@@ -6,9 +6,37 @@
 
 html {
   scroll-behavior: smooth;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 body {
   margin: 0;
+  width: 100%;
+  overflow-x: hidden;
   background: #f6f7fb;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+}
+
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+pre {
+  max-width: 100%;
 }

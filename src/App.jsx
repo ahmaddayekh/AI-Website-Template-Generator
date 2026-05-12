@@ -222,6 +222,7 @@ function CustomerLogin() {
 function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isAdminPage = location.pathname.startsWith("/admin");
 
@@ -229,87 +230,175 @@ function Navbar() {
     ? JSON.parse(localStorage.getItem("customer"))
     : null;
 
+  function closeMenu() {
+    setMenuOpen(false);
+  }
+
   function logoutCustomer() {
     localStorage.removeItem("customerToken");
     localStorage.removeItem("customer");
+    closeMenu();
     navigate("/login");
   }
 
   function logoutAdmin() {
     localStorage.removeItem("adminToken");
+    closeMenu();
     navigate("/admin/login");
   }
 
+  const mobileLinkClass =
+    "block rounded-2xl px-4 py-3 text-base font-black text-slate-700 hover:bg-slate-100 hover:text-slate-950";
+
   return (
-    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/85 backdrop-blur-xl">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <Link to="/" className="text-xl font-black tracking-tight">
-          AI Website Template Generator
-        </Link>
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
+      <nav className="mx-auto max-w-7xl px-4 py-4 sm:px-6">
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            to="/"
+            onClick={closeMenu}
+            className="max-w-[220px] text-base font-black leading-tight tracking-tight text-slate-950 sm:max-w-none sm:text-xl"
+          >
+            AI Website Template Generator
+          </Link>
 
-        <div className="flex items-center gap-5 text-sm font-semibold text-slate-600">
-          {!isAdminPage && (
-            <>
-              <Link className="hover:text-slate-950" to="/generator">
-                Generator
-              </Link>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((open) => !open)}
+            className="grid h-11 w-11 place-items-center rounded-2xl border border-slate-200 bg-white text-2xl font-black text-slate-950 lg:hidden"
+            aria-label="Toggle menu"
+          >
+            {menuOpen ? "×" : "☰"}
+          </button>
 
-              <Link className="hover:text-slate-950" to="/templates">
-                Examples
-              </Link>
+          <div className="hidden items-center gap-5 text-sm font-semibold text-slate-600 lg:flex">
+            {!isAdminPage && (
+              <>
+                <Link className="hover:text-slate-950" to="/generator">
+                  Generator
+                </Link>
 
-              <Link className="hover:text-slate-950" to="/pricing">
-                Pricing
-              </Link>
+                <Link className="hover:text-slate-950" to="/templates">
+                  Examples
+                </Link>
 
-              <Link
-                className="rounded-full bg-slate-950 px-4 py-2 text-white"
-                to="/enterprise"
-              >
-                Enterprise
-              </Link>
+                <Link className="hover:text-slate-950" to="/pricing">
+                  Pricing
+                </Link>
 
-              {customer ? (
-                <>
-                  <span className="hidden text-slate-500 md:inline">
-                    {customer.name}
-                  </span>
+                <Link
+                  className="rounded-full bg-slate-950 px-4 py-2 text-white"
+                  to="/enterprise"
+                >
+                  Enterprise
+                </Link>
 
-                  <button
-                    onClick={logoutCustomer}
-                    className="rounded-full border border-slate-200 bg-white px-4 py-2 font-black text-slate-950"
-                  >
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link className="hover:text-slate-950" to="/login">
-                    Sign In
-                  </Link>
+                {customer ? (
+                  <>
+                    <span className="text-slate-500">{customer.name}</span>
 
-                  <Link
-                    className="rounded-full border border-slate-200 bg-white px-4 py-2 font-black text-slate-950"
-                    to="/signup"
-                  >
-                    Sign Up
-                  </Link>
-                </>
-              )}
-            </>
-          )}
+                    <button
+                      onClick={logoutCustomer}
+                      className="rounded-full border border-slate-200 bg-white px-4 py-2 font-black text-slate-950"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link className="hover:text-slate-950" to="/login">
+                      Sign In
+                    </Link>
 
-          {isAdminPage &&
-            location.pathname !== "/admin/login" &&
-            localStorage.getItem("adminToken") && (
-              <button
-                onClick={logoutAdmin}
-                className="rounded-full bg-slate-950 px-4 py-2 font-black text-white"
-              >
-                Admin Sign Out
-              </button>
+                    <Link
+                      className="rounded-full border border-slate-200 bg-white px-4 py-2 font-black text-slate-950"
+                      to="/signup"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </>
             )}
+
+            {isAdminPage &&
+              location.pathname !== "/admin/login" &&
+              localStorage.getItem("adminToken") && (
+                <button
+                  onClick={logoutAdmin}
+                  className="rounded-full bg-slate-950 px-4 py-2 font-black text-white"
+                >
+                  Admin Sign Out
+                </button>
+              )}
+          </div>
         </div>
+
+        {menuOpen && (
+          <div className="mt-4 rounded-[1.5rem] border border-slate-200 bg-white p-3 shadow-xl shadow-slate-900/10 lg:hidden">
+            {!isAdminPage && (
+              <>
+                <Link onClick={closeMenu} className={mobileLinkClass} to="/generator">
+                  Generator
+                </Link>
+
+                <Link onClick={closeMenu} className={mobileLinkClass} to="/templates">
+                  Examples
+                </Link>
+
+                <Link onClick={closeMenu} className={mobileLinkClass} to="/pricing">
+                  Pricing
+                </Link>
+
+                <Link onClick={closeMenu} className={mobileLinkClass} to="/enterprise">
+                  Enterprise
+                </Link>
+
+                <div className="my-3 border-t border-slate-200" />
+
+                {customer ? (
+                  <>
+                    <div className="px-4 py-2 text-sm font-bold text-slate-500">
+                      Signed in as {customer.name}
+                    </div>
+
+                    <button
+                      onClick={logoutCustomer}
+                      className="mt-2 w-full rounded-2xl bg-slate-950 px-4 py-3 font-black text-white"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link onClick={closeMenu} className={mobileLinkClass} to="/login">
+                      Sign In
+                    </Link>
+
+                    <Link
+                      onClick={closeMenu}
+                      className="mt-2 block rounded-2xl bg-slate-950 px-4 py-3 text-center font-black text-white"
+                      to="/signup"
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </>
+            )}
+
+            {isAdminPage &&
+              location.pathname !== "/admin/login" &&
+              localStorage.getItem("adminToken") && (
+                <button
+                  onClick={logoutAdmin}
+                  className="w-full rounded-2xl bg-slate-950 px-4 py-3 font-black text-white"
+                >
+                  Admin Sign Out
+                </button>
+              )}
+          </div>
+        )}
       </nav>
     </header>
   );
@@ -402,14 +491,7 @@ function Generator() {
     colors: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
+  
 
   const [usage, setUsage] = useState({
     usedGenerations: 0,
@@ -533,8 +615,8 @@ function Generator() {
   }
 
   return (
-    <main className="mx-auto grid max-w-7xl gap-6 px-6 py-12 lg:grid-cols-2">
-      <section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5">
+    <main className="mx-auto grid max-w-7xl gap-6 px-4 py-8 sm:px-6 sm:py-12 lg:grid-cols-2">
+      <section className="rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-xl shadow-slate-900/5 sm:rounded-[2rem] sm:p-8">
         <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <p className="text-sm font-black text-slate-950">
             Free Trial Usage
@@ -557,7 +639,7 @@ function Generator() {
           </div>
         </div>
 
-        <h1 className="text-4xl font-black tracking-[-0.05em]">
+        <h1 className="text-3xl font-black tracking-[-0.05em] sm:text-4xl">
           Generate Your Website Template
         </h1>
 
@@ -654,7 +736,7 @@ function Generator() {
       </section>
 
       <section className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-900/5">
-        <h2 className="text-3xl font-black tracking-[-0.04em]">
+        <h2 className="text-2xl font-black tracking-[-0.04em] sm:text-3xl">
           Generated Website Blueprint
         </h2>
 
@@ -700,7 +782,7 @@ function Generator() {
                       key={sectionKey}
                       className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
                     >
-                      <div className="flex items-start justify-between gap-4">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <strong>{section.title}</strong>
 
@@ -714,7 +796,7 @@ function Generator() {
                           onClick={() =>
                             setSelectedSection(isOpen ? null : sectionKey)
                           }
-                          className="shrink-0 rounded-xl bg-slate-950 px-4 py-2 text-sm font-black text-white"
+                          className="w-full shrink-0 rounded-xl bg-slate-950 px-4 py-2 text-sm font-black text-white sm:w-auto"
                         >
                           {isOpen ? "Hide Code" : "Show Code"}
                         </button>
@@ -833,7 +915,7 @@ function Templates() {
     async function loadTemplates() {
       try {
         const response = await api.get("/templates/public");
-        setTemplates(response.data);
+        setTemplates(response.data || []);
       } catch (error) {
         alert(error.response?.data?.message || "Failed to load templates");
       } finally {
@@ -845,12 +927,13 @@ function Templates() {
   }, []);
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-12">
+    <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12">
       <div className="mb-8">
-        <h1 className="text-5xl font-black tracking-[-0.06em]">
+        <h1 className="text-3xl font-black tracking-[-0.05em] sm:text-5xl">
           Template Marketplace
         </h1>
-        <p className="mt-3 text-slate-600">
+
+        <p className="mt-3 max-w-2xl leading-7 text-slate-600">
           Published templates loaded directly from MongoDB.
         </p>
       </div>
@@ -858,7 +941,7 @@ function Templates() {
       {loading && <p className="text-slate-600">Loading templates...</p>}
 
       {!loading && templates.length === 0 && (
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-8">
+        <div className="rounded-[1.5rem] border border-slate-200 bg-white p-5 sm:rounded-[2rem] sm:p-8">
           <h2 className="text-2xl font-black">No published templates yet</h2>
           <p className="mt-2 text-slate-600">
             Go to the admin dashboard and publish a template.
@@ -866,37 +949,74 @@ function Templates() {
         </div>
       )}
 
-      <div className="grid gap-6 md:grid-cols-3 xl:grid-cols-6">
-        <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
-          <p className="text-4xl font-black">{stats.totalTemplates}</p>
-          <p className="mt-3 font-bold text-slate-300">Total Templates</p>
-        </div>
+      {!loading && templates.length > 0 && (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {templates.map((template) => (
+            <article
+              key={template.id}
+              className="overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white shadow-xl shadow-slate-900/5 sm:rounded-[2rem]"
+            >
+              {template.previewImage ? (
+                <img
+                  src={template.previewImage}
+                  alt={template.title}
+                  className="h-48 w-full object-cover"
+                />
+              ) : (
+                <div className="grid h-48 place-items-center bg-slate-950 px-6 text-center text-white">
+                  <p className="text-2xl font-black tracking-[-0.04em]">
+                    {template.title}
+                  </p>
+                </div>
+              )}
 
-        <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
-          <p className="text-4xl font-black">{stats.publishedTemplates}</p>
-          <p className="mt-3 font-bold text-slate-300">Published</p>
-        </div>
+              <div className="p-5 sm:p-6">
+                <div className="mb-3 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
+                    {template.category || "Template"}
+                  </span>
 
-        <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
-          <p className="text-4xl font-black">{stats.totalGenerations}</p>
-          <p className="mt-3 font-bold text-slate-300">AI Generations</p>
-        </div>
+                  <span className="rounded-full bg-slate-950 px-3 py-1 text-xs font-black text-white">
+                    ${template.price || 0}
+                  </span>
+                </div>
 
-        <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
-          <p className="text-4xl font-black">{stats.totalCustomers}</p>
-          <p className="mt-3 font-bold text-slate-300">Customers</p>
-        </div>
+                <h2 className="text-xl font-black tracking-[-0.03em]">
+                  {template.title}
+                </h2>
 
-        <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
-          <p className="text-4xl font-black">{stats.proCustomers}</p>
-          <p className="mt-3 font-bold text-slate-300">Pro Customers</p>
-        </div>
+                <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
+                  {template.description}
+                </p>
 
-        <div className="rounded-[2rem] bg-slate-950 p-8 text-white">
-          <p className="text-4xl font-black">{stats.freeCustomers}</p>
-          <p className="mt-3 font-bold text-slate-300">Free Customers</p>
+                {template.features?.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {template.features.slice(0, 4).map((feature) => (
+                      <span
+                        key={feature}
+                        className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600"
+                      >
+                        {feature}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {template.downloadUrl && (
+                  <a
+                    href={template.downloadUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-6 block rounded-2xl bg-slate-950 px-5 py-3 text-center font-black text-white"
+                  >
+                    View Template
+                  </a>
+                )}
+              </div>
+            </article>
+          ))}
         </div>
-      </div>
+      )}
     </main>
   );
 }
@@ -1062,10 +1182,7 @@ function AdminDashboard() {
     loadAdminData();
   }, []);
 
-  function updateField(field, value) {
-    setForm({ ...form, [field]: value });
-  }
-
+ 
   function resetForm() {
     setForm({
       title: "",
